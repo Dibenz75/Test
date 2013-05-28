@@ -3,7 +3,6 @@
     <title>Shake it!</title>
 
 	<script src="js/zepto.min.js" type="text/javascript"></script>
-	<script src="phonegap.js" type="text/javascript"></script>
 	<script src="js/shake.js" type="text/javascript"></script>
 
 	<link rel="stylesheet" href="styles/styles.css" />
@@ -30,7 +29,7 @@
 			//Folgender Code wird ausgeführt, wenn eine Schüttelgeste vorliegt.
 			if(!geschuettelt) {
 				$(".flickr-bild").toggleClass('sichtbar');
-				$('button').text("Neues Foto machen!").toggleClass("shakeit").removeAttr("disabled");
+				$('button').text("Neues Polaroid!").toggleClass("shakeit").removeAttr("disabled");
 				geschuettelt = true;
 			}
 			
@@ -50,31 +49,20 @@
 	
 	var neuespolaroid = function() {
 		
-		navigator.camera.getPicture(onSuccess, onFail, {
-			quality: 10,
-			destinationType: Camera.DestinationType.FILE_URI,
-			targetWidth:400,
-			targetHeight:400	
-		});
-		
-	};
-	
-	function onSuccess(imageURI) {
-		
 		$(".polaroid-rahmen").css('-webkit-transform', 'rotate('+(Math.floor(Math.random() * 10)-5)+'deg)');
 		
 		$('.polaroid-rahmen').toggleClass('sichtbar');
 		$('button').text("Und jetzt, shake it!").toggleClass('shakeit').attr("disabled","disabled");
 		
-	
-		$('.flickr-bild').css("background", "url(" + imageURI + ")");
-
+		//Eine Variable für das zufällige Bild
+		var randomImage = "";
 		
-	}
-	
-	function onFail(message) {
-		alert('Das Foto konnte aus folgenden Gründen nicht geschossen werden:'+message);
-	}
+		$.getJSON("http://api.flickr.com/services/feeds/photos_public.gne?id=29306403@N07&lang=de-de&format=json&jsoncallback=?", function(data) {
+			randomImage = data.items[Math.floor(Math.random() * data.items.length)].media.m;
+			$('.flickr-bild').css("background", "url(" + randomImage + ")");
+		});
+		
+	};
 	
 	var polaroidweg = function () {
 		
@@ -101,7 +89,7 @@
 	</div>
 	
 	<footer>
-		<button>Foto machen!</button>
+		<button>Polaroid laden!</button>
 	</footer>
 
 </body>
